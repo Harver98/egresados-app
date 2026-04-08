@@ -12,7 +12,7 @@ export async function GET(request) {
     )
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('egresados')
     .select('nombre_completo, cedula, estado, fecha_vencimiento')
     .eq('cedula', cedula)
