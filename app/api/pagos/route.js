@@ -14,7 +14,7 @@ async function verificarAdmin(request) {
   return session?.user?.email === process.env.ADMIN_EMAIL ? session : null
 }
 
-export async function POST(request) {
+  export async function POST(request) {
   const session = await verificarAdmin(request)
   if (!session) {
     return NextResponse.json({ error: 'No autorizado.' }, { status: 401 })
