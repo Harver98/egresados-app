@@ -47,15 +47,18 @@ export default function AdminPage() {
     cargarEgresados()
   }
 
-  const registrarPago = async (egresado_id) => {
+const registrarPago = async (egresado_id) => {
   const res = await fetch('/api/pagos', {
     method: 'POST',
     credentials: 'include', // 👈 ESTE ES EL FIX
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ egresado_id, monto: 0, observaciones: 'Renovación manual' })
   })
-  
-  const data = await res.json()
+    const data = await res.json()
+    setMsg(data.mensaje || data.error)
+    cargarEgresados()
+  }
+
   const agregarEgresado = async (e) => {
     e.preventDefault()
     const res = await fetch('/api/egresados', {
