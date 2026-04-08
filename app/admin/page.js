@@ -11,6 +11,9 @@ export default function AdminPage() {
   const [nuevo, setNuevo] = useState({ cedula: '', nombre_completo: '', email: '' })
   const [msg, setMsg] = useState('')
 
+  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
+  console.log("KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
     supabase.auth.onAuthStateChange((_, s) => setSession(s))
