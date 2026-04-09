@@ -25,12 +25,15 @@ export async function GET(request) {
     )
   }
 
+  // ✅ Verificar vencimiento en tiempo real
+  const ahora = new Date()
+  const vencimiento = data.fecha_vencimiento ? new Date(data.fecha_vencimiento) : null
+  const estadoReal = vencimiento && vencimiento < ahora ? 'Inactivo' : data.estado
+
   return NextResponse.json({
     nombre_completo: data.nombre_completo,
     cedula: data.cedula,
-    estado: data.estado,
-    vigente_hasta: data.fecha_vencimiento
-      ? new Date(data.fecha_vencimiento).toLocaleDateString('es-CO')
-      : null,
+    estado: estadoReal,
+    vigente_hasta: vencimiento ? vencimiento.toLocaleDateString('es-CO') : null,
   })
 }
