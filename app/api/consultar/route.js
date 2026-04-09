@@ -25,15 +25,20 @@ export async function GET(request) {
     )
   }
 
-  // ✅ Verificar vencimiento en tiempo real
   const ahora = new Date()
   const vencimiento = data.fecha_vencimiento ? new Date(data.fecha_vencimiento) : null
   const estadoReal = vencimiento && vencimiento < ahora ? 'Inactivo' : data.estado
+
+  const diasRestantes = vencimiento ? Math.ceil((vencimiento - ahora) / (1000 * 60 * 60 * 24)) : null
+  const alertaVencimiento = diasRestantes !== null && diasRestantes >= 0 && diasRestantes <= 5
+    ? `Tu membresía vence en ${diasRestantes} día${diasRestantes === 1 ? '' : 's'}.`
+    : null
 
   return NextResponse.json({
     nombre_completo: data.nombre_completo,
     cedula: data.cedula,
     estado: estadoReal,
     vigente_hasta: vencimiento ? vencimiento.toLocaleDateString('es-CO') : null,
+    alerta_vencimiento: alertaVencimiento,
   })
 }

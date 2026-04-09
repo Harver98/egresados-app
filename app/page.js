@@ -35,7 +35,7 @@ export default function ConsultaPage() {
     }}>
       <div style={{ width: '100%', maxWidth: 460 }}>
 
-        {/* Logo / Brand */}
+        {/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{
             width: 52, height: 52,
@@ -58,7 +58,7 @@ export default function ConsultaPage() {
           </p>
         </div>
 
-        {/* Card principal */}
+        {/* Formulario */}
         <div style={{
           background: '#fff',
           border: '1px solid #e5e7eb',
@@ -103,7 +103,6 @@ export default function ConsultaPage() {
                 border: 'none',
                 borderRadius: 10,
                 cursor: cargando || !cedula ? 'not-allowed' : 'pointer',
-                transition: 'background 0.15s',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -150,6 +149,28 @@ export default function ConsultaPage() {
           </div>
         )}
 
+        {/* Alerta de vencimiento próximo */}
+        {resultado?.alerta_vencimiento && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '12px 16px',
+            background: '#fffbeb',
+            border: '1px solid #fcd34d',
+            borderRadius: 12,
+            marginBottom: 12
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span style={{ fontSize: 13, color: '#92400e', fontWeight: 500 }}>
+              {resultado.alerta_vencimiento}
+            </span>
+          </div>
+        )}
+
         {/* Resultado */}
         {resultado && (
           <div style={{
@@ -185,7 +206,7 @@ export default function ConsultaPage() {
                 <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: activo ? '#166534' : '#991b1b' }}>
                   {activo ? 'Afiliación activa' : 'Afiliación inactiva'}
                 </p>
-                <p style={{ margin: 0, fontSize: 11, color: activo ? '#4ade80' : '#fca5a5', marginTop: 1 }}>
+                <p style={{ margin: '2px 0 0', fontSize: 11, color: activo ? '#16a34a' : '#dc2626' }}>
                   {activo ? 'Al día con ASEDUIS' : 'Sin afiliación vigente'}
                 </p>
               </div>
@@ -203,7 +224,7 @@ export default function ConsultaPage() {
               </div>
             </div>
 
-            {/* Datos del egresado */}
+            {/* Datos */}
             <div style={{ padding: '20px 20px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                 <div style={{
@@ -253,7 +274,7 @@ export default function ConsultaPage() {
         )}
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#9ca3af', marginTop: 28 }}>
-          ¿Inconvenientes? Contactanos 3242606004
+          ¿Inconvenientes? Contacta a tu sindicato local.
         </p>
       </div>
 
