@@ -253,7 +253,7 @@ export default function ConsultaPage() {
         )}
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#9ca3af', marginTop: 28 }}>
-          ¿Inconvenientes? Contacta a tu sindicato local.
+          ¿Inconvenientes? Contactanos 3242606004
         </p>
       </div>
 
