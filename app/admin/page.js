@@ -13,6 +13,8 @@ export default function AdminPage() {
   const [msgTipo, setMsgTipo] = useState('success')
   const [dias, setDias] = useState({})
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [alertas, setAlertas] = useState([])
+  const [mostrarAlertas, setMostrarAlertas] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -41,6 +43,22 @@ export default function AdminPage() {
     const res = await fetch('/api/egresados')
     const data = await res.json()
     setEgresados(data)
+
+    // Calcular alertas de vencimiento
+    const ahora = new Date()
+    const proximos = data.filter(eg => {
+      if (!eg.fecha_vencimiento || eg.estado !== 'Activo') return false
+      const venc = new Date(eg.fecha_vencimiento)
+      const diff = Math.ceil((venc - ahora) / (1000 * 60 * 60 * 24))
+      return diff >= 0 && diff <= 30
+    }).map(eg => {
+      const venc = new Date(eg.fecha_vencimiento)
+      const diff = Math.ceil((venc - ahora) / (1000 * 60 * 60 * 24))
+      return { ...eg, diasRestantes: diff }
+    }).sort((a, b) => a.diasRestantes - b.diasRestantes)
+
+    setAlertas(proximos)
+    setMostrarAlertas(true)
   }
 
   const cambiarEstado = async (id, estadoActual) => {
@@ -120,44 +138,33 @@ export default function AdminPage() {
   }
 
   const s = {
-    // Layout
     page: { maxWidth: 960, margin: '0 auto', padding: '40px 24px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: '#111' },
-    // Header
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #e5e7eb' },
     headerLeft: { display: 'flex', flexDirection: 'column', gap: 2 },
     headerTitle: { fontSize: 22, fontWeight: 600, margin: 0, color: '#111' },
     headerSub: { fontSize: 13, color: '#6b7280', margin: 0 },
-    // Buttons
     btnPrimary: { padding: '9px 18px', background: '#1d4ed8', color: '#fff', border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: 'pointer' },
     btnSecondary: { padding: '8px 14px', background: '#fff', color: '#374151', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 13, cursor: 'pointer' },
     btnGhost: { padding: '5px 10px', background: 'transparent', color: '#6b7280', border: '1px solid #e5e7eb', borderRadius: 6, fontSize: 12, cursor: 'pointer' },
     btnDanger: { padding: '5px 10px', background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', borderRadius: 6, fontSize: 12, cursor: 'pointer' },
     btnSuccess: { padding: '5px 10px', background: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7', borderRadius: 6, fontSize: 12, cursor: 'pointer' },
     btnWarning: { padding: '5px 10px', background: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d', borderRadius: 6, fontSize: 12, cursor: 'pointer' },
-    // Input
     input: { padding: '9px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none', background: '#fff', color: '#111', width: '100%', boxSizing: 'border-box' },
     inputSmall: { padding: '5px 8px', border: '1px solid #d1d5db', borderRadius: 6, fontSize: 12, width: 64, textAlign: 'center', outline: 'none' },
-    // Mensaje
     msgSuccess: { padding: '12px 16px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8, color: '#166534', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 },
     msgError: { padding: '12px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, color: '#991b1b', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 },
-    // Card formulario
     formCard: { background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20, marginBottom: 24 },
     formRow: { display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 },
-    // Search bar
     searchWrap: { position: 'relative', marginBottom: 16 },
     searchIcon: { position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', fontSize: 14, pointerEvents: 'none' },
     searchInput: { padding: '9px 12px 9px 36px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, width: '100%', boxSizing: 'border-box', outline: 'none', background: '#fff', color: '#111' },
-    // Table
     tableWrap: { overflowX: 'auto', border: '1px solid #e5e7eb', borderRadius: 12, background: '#fff' },
     table: { width: '100%', borderCollapse: 'collapse', fontSize: 13 },
     th: { padding: '11px 14px', textAlign: 'left', color: '#6b7280', fontWeight: 500, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #e5e7eb', background: '#f9fafb' },
     td: { padding: '12px 14px', borderBottom: '1px solid #f3f4f6', verticalAlign: 'middle' },
-    // Badges
     badgeActivo: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 10px', background: '#d1fae5', color: '#065f46', borderRadius: 20, fontSize: 11, fontWeight: 500 },
     badgeInactivo: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 10px', background: '#f3f4f6', color: '#6b7280', borderRadius: 20, fontSize: 11, fontWeight: 500 },
-    // Acciones row
     accionesRow: { display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' },
-    // Login
     loginWrap: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9fafb', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' },
     loginCard: { background: '#fff', border: '1px solid #e5e7eb', borderRadius: 16, padding: '40px 36px', width: '100%', maxWidth: 380 },
   }
@@ -216,6 +223,84 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+
+      {/* ✅ PANEL DE ALERTAS DE VENCIMIENTO */}
+      {mostrarAlertas && alertas.length > 0 && (
+        <div style={{
+          background: '#fffbeb',
+          border: '1px solid #fcd34d',
+          borderRadius: 12,
+          padding: '16px 20px',
+          marginBottom: 24
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#92400e' }}>
+                {alertas.length} membresía{alertas.length !== 1 ? 's' : ''} próxima{alertas.length !== 1 ? 's' : ''} a vencer
+              </span>
+            </div>
+            <button
+              onClick={() => setMostrarAlertas(false)}
+              style={{ background: 'transparent', border: 'none', color: '#b45309', fontSize: 16, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>
+              ✕
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {alertas.map(eg => (
+              <div key={eg.id} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: '#fff',
+                border: `1px solid ${eg.diasRestantes <= 5 ? '#fca5a5' : '#fde68a'}`,
+                borderRadius: 8,
+                padding: '10px 14px',
+                flexWrap: 'wrap',
+                gap: 8
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: '50%',
+                    background: eg.diasRestantes <= 5 ? '#fee2e2' : '#fef3c7',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 600,
+                    color: eg.diasRestantes <= 5 ? '#b91c1c' : '#92400e',
+                    flexShrink: 0
+                  }}>
+                    {eg.nombre_completo.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()}
+                  </div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 13, fontWeight: 500, color: '#111' }}>{eg.nombre_completo}</p>
+                    <p style={{ margin: 0, fontSize: 11, color: '#6b7280', fontFamily: 'monospace' }}>C.C. {eg.cedula}</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{
+                    padding: '3px 10px',
+                    borderRadius: 20,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    background: eg.diasRestantes <= 5 ? '#fee2e2' : '#fef3c7',
+                    color: eg.diasRestantes <= 5 ? '#b91c1c' : '#92400e',
+                    border: `1px solid ${eg.diasRestantes <= 5 ? '#fca5a5' : '#fcd34d'}`
+                  }}>
+                    {eg.diasRestantes === 0 ? 'Vence hoy' : `Vence en ${eg.diasRestantes} día${eg.diasRestantes !== 1 ? 's' : ''}`}
+                  </span>
+                  <span style={{ fontSize: 12, color: '#6b7280' }}>
+                    {new Date(eg.fecha_vencimiento).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* MENSAJE */}
       {msg && (
