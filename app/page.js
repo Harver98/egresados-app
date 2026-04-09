@@ -24,7 +24,7 @@ export default function ConsultaPage() {
   return (
     <main style={{ maxWidth: 480, margin: '80px auto', padding: '0 24px', fontFamily: 'system-ui' }}>
       <h1 style={{ fontSize: 24, fontWeight: 600, marginBottom: 8 }}>
-        Consulta de afiliación
+        Consulta de afiliación ASEDUIS Bucaramanga
       </h1>
       <p style={{ color: '#666', marginBottom: 32 }}>
         Ingresa tu número de cédula para verificar tu estado de afiliación.
