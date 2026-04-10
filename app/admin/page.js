@@ -109,6 +109,13 @@ export default function AdminPage() {
       mostrarMensaje('Cédula y nombre son obligatorios', 'error')
       return
     }
+
+    const existe = egresados.some(eg => eg.cedula === nuevo.cedula.trim())
+    if (existe) {
+      mostrarMensaje(`La cédula ${nuevo.cedula} ya está registrada.`, 'error')
+      return
+    }
+
     const res = await fetch('/api/egresados', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
