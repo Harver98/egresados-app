@@ -54,7 +54,7 @@ export default function ConsultaPage() {
             ASEDUIS Bucaramanga
           </h1>
           <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
-            Consulta tu estado de afiliación
+            Consulta de afiliación
           </p>
         </div>
 
