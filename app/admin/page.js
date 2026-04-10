@@ -15,6 +15,7 @@ export default function AdminPage() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [alertas, setAlertas] = useState([])
   const [mostrarAlertas, setMostrarAlertas] = useState(true)
+  const [filtroVigencia, setFiltroVigencia] = useState('todos')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -44,7 +45,6 @@ export default function AdminPage() {
     const data = await res.json()
     setEgresados(data)
 
-    // Calcular alertas de vencimiento
     const ahora = new Date()
     const proximos = data.filter(eg => {
       if (!eg.fecha_vencimiento || eg.estado !== 'Activo') return false
@@ -109,13 +109,11 @@ export default function AdminPage() {
       mostrarMensaje('Cédula y nombre son obligatorios', 'error')
       return
     }
-
     const existe = egresados.some(eg => eg.cedula === nuevo.cedula.trim())
     if (existe) {
       mostrarMensaje(`La cédula ${nuevo.cedula} ya está registrada.`, 'error')
       return
     }
-
     const res = await fetch('/api/egresados', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -129,11 +127,6 @@ export default function AdminPage() {
     }
   }
 
-  const filtrados = egresados.filter(e =>
-    e.cedula.includes(busqueda) ||
-    e.nombre_completo.toLowerCase().includes(busqueda.toLowerCase())
-  )
-
   const getVigenciaEstado = (fecha) => {
     if (!fecha) return null
     const hoy = new Date()
@@ -142,6 +135,38 @@ export default function AdminPage() {
     if (diff < 0) return 'vencido'
     if (diff <= 30) return 'proximo'
     return 'vigente'
+  }
+
+  const filtrados = egresados.filter(e => {
+    const coincideBusqueda =
+      e.cedula.includes(busqueda) ||
+      e.nombre_completo.toLowerCase().includes(busqueda.toLowerCase())
+    if (!coincideBusqueda) return false
+    if (filtroVigencia === 'todos') return true
+    if (filtroVigencia === 'activo') return e.estado === 'Activo'
+    if (filtroVigencia === 'inactivo') return e.estado === 'Inactivo'
+    if (filtroVigencia === 'vencido') {
+      if (!e.fecha_vencimiento) return false
+      return new Date(e.fecha_vencimiento) < new Date()
+    }
+    if (filtroVigencia === 'proximo') {
+      if (!e.fecha_vencimiento) return false
+      const diff = Math.ceil((new Date(e.fecha_vencimiento) - new Date()) / (1000 * 60 * 60 * 24))
+      return diff >= 0 && diff <= 30
+    }
+    return true
+  })
+
+  const conteo = (valor) => {
+    if (valor === 'activo') return egresados.filter(e => e.estado === 'Activo').length
+    if (valor === 'inactivo') return egresados.filter(e => e.estado === 'Inactivo').length
+    if (valor === 'vencido') return egresados.filter(e => e.fecha_vencimiento && new Date(e.fecha_vencimiento) < new Date()).length
+    if (valor === 'proximo') return egresados.filter(e => {
+      if (!e.fecha_vencimiento) return false
+      const diff = Math.ceil((new Date(e.fecha_vencimiento) - new Date()) / (1000 * 60 * 60 * 24))
+      return diff >= 0 && diff <= 30
+    }).length
+    return egresados.length
   }
 
   const s = {
@@ -183,6 +208,29 @@ export default function AdminPage() {
     if (estado === 'vencido') return <span style={{ display: 'inline-block', padding: '2px 8px', background: '#fee2e2', color: '#b91c1c', borderRadius: 6, fontSize: 12 }}>{dateStr}</span>
     if (estado === 'proximo') return <span style={{ display: 'inline-block', padding: '2px 8px', background: '#fef3c7', color: '#92400e', borderRadius: 6, fontSize: 12 }}>{dateStr}</span>
     return <span style={{ display: 'inline-block', padding: '2px 8px', background: '#f0fdf4', color: '#166534', borderRadius: 6, fontSize: 12 }}>{dateStr}</span>
+  }
+
+  const filtroBtnStyle = (valor) => {
+    const activo = filtroVigencia === valor
+    const colores = {
+      todos:   { bg: '#1d4ed8', color: '#fff', border: 'none' },
+      activo:  { bg: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7' },
+      inactivo:{ bg: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db' },
+      vencido: { bg: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5' },
+      proximo: { bg: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d' },
+    }
+    return {
+      padding: '6px 14px',
+      borderRadius: 20,
+      fontSize: 12,
+      fontWeight: 500,
+      cursor: 'pointer',
+      transition: 'opacity 0.15s',
+      opacity: activo ? 1 : 0.6,
+      background: activo ? colores[valor].bg : '#fff',
+      color: activo ? colores[valor].color : '#6b7280',
+      border: activo ? colores[valor].border : '1px solid #e5e7eb',
+    }
   }
 
   // LOGIN
@@ -231,15 +279,9 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* ✅ PANEL DE ALERTAS DE VENCIMIENTO */}
+      {/* PANEL DE ALERTAS */}
       {mostrarAlertas && alertas.length > 0 && (
-        <div style={{
-          background: '#fffbeb',
-          border: '1px solid #fcd34d',
-          borderRadius: 12,
-          padding: '16px 20px',
-          marginBottom: 24
-        }}>
+        <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '16px 20px', marginBottom: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
@@ -250,25 +292,17 @@ export default function AdminPage() {
                 {alertas.length} membresía{alertas.length !== 1 ? 's' : ''} próxima{alertas.length !== 1 ? 's' : ''} a vencer
               </span>
             </div>
-            <button
-              onClick={() => setMostrarAlertas(false)}
-              style={{ background: 'transparent', border: 'none', color: '#b45309', fontSize: 16, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>
+            <button onClick={() => setMostrarAlertas(false)}
+              style={{ background: 'transparent', border: 'none', color: '#b45309', fontSize: 16, cursor: 'pointer', padding: '0 4px' }}>
               ✕
             </button>
           </div>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {alertas.map(eg => (
               <div key={eg.id} style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                background: '#fff',
-                border: `1px solid ${eg.diasRestantes <= 5 ? '#fca5a5' : '#fde68a'}`,
-                borderRadius: 8,
-                padding: '10px 14px',
-                flexWrap: 'wrap',
-                gap: 8
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                background: '#fff', border: `1px solid ${eg.diasRestantes <= 5 ? '#fca5a5' : '#fde68a'}`,
+                borderRadius: 8, padding: '10px 14px', flexWrap: 'wrap', gap: 8
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{
@@ -276,8 +310,7 @@ export default function AdminPage() {
                     background: eg.diasRestantes <= 5 ? '#fee2e2' : '#fef3c7',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 13, fontWeight: 600,
-                    color: eg.diasRestantes <= 5 ? '#b91c1c' : '#92400e',
-                    flexShrink: 0
+                    color: eg.diasRestantes <= 5 ? '#b91c1c' : '#92400e', flexShrink: 0
                   }}>
                     {eg.nombre_completo.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()}
                   </div>
@@ -286,13 +319,9 @@ export default function AdminPage() {
                     <p style={{ margin: 0, fontSize: 11, color: '#6b7280', fontFamily: 'monospace' }}>C.C. {eg.cedula}</p>
                   </div>
                 </div>
-
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{
-                    padding: '3px 10px',
-                    borderRadius: 20,
-                    fontSize: 11,
-                    fontWeight: 600,
+                    padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600,
                     background: eg.diasRestantes <= 5 ? '#fee2e2' : '#fef3c7',
                     color: eg.diasRestantes <= 5 ? '#b91c1c' : '#92400e',
                     border: `1px solid ${eg.diasRestantes <= 5 ? '#fca5a5' : '#fcd34d'}`
@@ -344,6 +373,26 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* FILTROS */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+        {[
+          { valor: 'todos',   label: 'Todos' },
+          { valor: 'activo',  label: 'Activos' },
+          { valor: 'inactivo',label: 'Inactivos' },
+          { valor: 'vencido', label: 'Vencidos' },
+          { valor: 'proximo', label: 'Próximos a vencer' },
+        ].map(({ valor, label }) => (
+          <button key={valor} onClick={() => setFiltroVigencia(valor)} style={filtroBtnStyle(valor)}>
+            {label}
+            {valor !== 'todos' && (
+              <span style={{ marginLeft: 6, fontWeight: 600 }}>
+                {conteo(valor)}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
       {/* BUSCADOR */}
       <div style={s.searchWrap}>
         <span style={s.searchIcon}>⌕</span>
@@ -390,7 +439,6 @@ export default function AdminPage() {
                       style={eg.estado === 'Activo' ? s.btnGhost : s.btnSuccess}>
                       {eg.estado === 'Activo' ? 'Desactivar' : 'Activar'}
                     </button>
-
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#f3f4f6', borderRadius: 6, padding: '3px 6px' }}>
                       <input
                         type="number"
@@ -411,11 +459,9 @@ export default function AdminPage() {
                         +365
                       </button>
                     </div>
-
                     <button onClick={() => registrarPago(eg.id)} style={s.btnWarning}>
                       Renovar
                     </button>
-
                     <button onClick={() => eliminarEgresado(eg.id)} style={s.btnDanger}>
                       Eliminar
                     </button>
@@ -429,7 +475,7 @@ export default function AdminPage() {
         {filtrados.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 24px' }}>
             <p style={{ color: '#9ca3af', fontSize: 14, margin: 0 }}>
-              {busqueda ? `Sin resultados para "${busqueda}"` : 'No hay egresados registrados.'}
+              {busqueda ? `Sin resultados para "${busqueda}"` : `No hay egresados en esta categoría.`}
             </p>
           </div>
         )}
