@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [msg, setMsg] = useState('')
   const [msgTipo, setMsgTipo] = useState('success')
   const [dias, setDias] = useState({})
+  const [fechasBase, setFechasBase] = useState({})
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [alertas, setAlertas] = useState([])
   const [mostrarAlertas, setMostrarAlertas] = useState(true)
@@ -60,6 +61,19 @@ export default function AdminPage() {
     setAlertas(proximos)
     setMostrarAlertas(true)
   }
+
+  const calcularDiasDesdeFecha = (fecha) => {
+  const hoy = new Date()
+  const base = new Date(fecha)
+
+  if (isNaN(base)) return ''
+
+  base.setDate(base.getDate() + 365)
+
+  const diff = Math.ceil((base - hoy) / (1000 * 60 * 60 * 24))
+  return diff > 0 ? diff : 0
+  }
+  
 
   const cambiarEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === 'Activo' ? 'Inactivo' : 'Activo'
@@ -440,6 +454,26 @@ export default function AdminPage() {
                       {eg.estado === 'Activo' ? 'Desactivar' : 'Activar'}
                     </button>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#f3f4f6', borderRadius: 6, padding: '3px 6px' }}>
+                     <input
+                      type="date"
+                      value={fechasBase[eg.id] || ''}
+                      onChange={(e) => {
+                        const fecha = e.target.value
+
+                        setFechasBase(prev => ({
+                          ...prev,
+                          [eg.id]: fecha
+                        }))
+
+                        const diasCalculados = calcularDiasDesdeFecha(fecha)
+
+                        setDias(prev => ({
+                          ...prev,
+                          [eg.id]: diasCalculados
+                        }))
+                      }}
+                      style={{ ...s.inputSmall, width: 130 }}
+                      /> 
                       <input
                         type="number"
                         placeholder="Días"
