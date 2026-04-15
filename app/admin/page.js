@@ -191,6 +191,68 @@ export default function AdminPage() {
     return
   }
 
+  const cargarExcel = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  const reader = new FileReader()
+
+  reader.onload = async (evt) => {
+    const data = new Uint8Array(evt.target.result)
+    const workbook = XLSX.read(data, { type: 'array' })
+    const sheet = workbook.Sheets[workbook.SheetNames[0]]
+
+    const jsonData = XLSX.utils.sheet_to_json(sheet)
+
+    if (jsonData.length === 0) {
+      mostrarMensaje('El archivo está vacío', 'error')
+      return
+    }
+
+    let agregados = 0
+    let errores = 0
+
+    for (const fila of jsonData) {
+      const cedula = fila['Cédula']?.toString().trim()
+      const nombre = fila['Nombre Completo']?.toString().trim()
+      const correo = fila['Correo']?.toString().trim()
+
+      if (!cedula || !nombre) {
+        errores++
+        continue
+      }
+
+      const existe = egresados.some(e => e.cedula === cedula)
+        if (existe) {
+          errores++
+          continue
+        }
+
+      try {
+        const res = await fetch('/api/egresados', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cedula,
+            nombre_completo: nombre,
+            email: correo
+          })
+        })
+
+        if (res.ok) agregados++
+        else errores++
+      } catch {
+        errores++
+      }
+    }
+
+    mostrarMensaje(`✔ ${agregados} agregados | ❌ ${errores} errores`)
+    cargarEgresados()
+  }
+
+  reader.readAsArrayBuffer(file)
+}
+
   const hoy = new Date()
 
   const activos = []
@@ -346,7 +408,17 @@ export default function AdminPage() {
     <main style={s.page}>
 
       {/* HEADER */}
-      
+      <input
+  type="file"
+  accept=".xlsx, .xls"
+  onChange={cargarExcel}
+  style={{ display: 'none' }}
+  id="inputExcel"
+/>
+
+<label htmlFor="inputExcel" style={s.btnSecondary}>
+  📂 Cargar Excel
+</label>
       <div style={s.header}>
         <div style={s.headerLeft}>
           <h1 style={s.headerTitle}>Gestión de egresados</h1>
