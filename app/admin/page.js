@@ -19,9 +19,7 @@ export default function AdminPage() {
   const [alertas, setAlertas] = useState([])
   const [mostrarAlertas, setMostrarAlertas] = useState(true)
   const [filtroVigencia, setFiltroVigencia] = useState('todos')
-  const [fechaInicio, setFechaInicio] = useState('')
-  const [fechaFin, setFechaFin] = useState('')
-
+  
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
     supabase.auth.onAuthStateChange((_, s) => setSession(s))
@@ -252,11 +250,6 @@ export default function AdminPage() {
   saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0,10)}.xlsx`)
 }
 
-  const exportarPorFechas = () => {
-  if (!fechaInicio || !fechaFin) {
-    mostrarMensaje('Selecciona ambas fechas', 'error')
-    return
-  }
 
   const inicio = new Date(fechaInicio)
   const fin = new Date(fechaFin)
@@ -392,31 +385,6 @@ export default function AdminPage() {
     <main style={s.page}>
 
       {/* HEADER */}
-      <div style={{
-  display: 'flex',
-  gap: 10,
-  alignItems: 'center',
-  marginBottom: 20,
-  flexWrap: 'wrap'
-}}>
-  <input
-    type="date"
-    value={fechaInicio}
-    onChange={(e) => setFechaInicio(e.target.value)}
-    style={s.input}
-  />
-
-  <input
-    type="date"
-    value={fechaFin}
-    onChange={(e) => setFechaFin(e.target.value)}
-    style={s.input}
-  />
-
-  <button onClick={exportarPorFechas} style={s.btnPrimary}>
-    Generar reporte por fechas
-  </button>
-</div>
       <div style={s.header}>
         <div style={s.headerLeft}>
           <h1 style={s.headerTitle}>Gestión de egresados</h1>
