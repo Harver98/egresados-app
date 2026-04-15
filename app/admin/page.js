@@ -222,12 +222,6 @@ export default function AdminPage() {
         continue
       }
 
-      const existe = egresados.some(e => e.cedula === cedula)
-        if (existe) {
-          errores++
-          continue
-        }
-
       try {
         const res = await fetch('/api/egresados', {
           method: 'POST',
