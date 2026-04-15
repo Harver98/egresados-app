@@ -191,6 +191,64 @@ export default function AdminPage() {
     return
   }
 
+  const hoy = new Date()
+  const activos = []
+  const proximos = []
+  const vencidos = []
+
+  egresados.forEach(e => {
+    if (!e.fecha_vencimiento) return
+
+    const fecha = new Date(e.fecha_vencimiento)
+    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24))
+
+    const registro = {
+      Cedula: e.cedula,
+      Nombre: e.nombre_completo,
+      Email: e.email || '',
+      Estado: e.estado,
+      'Fecha vencimiento': fecha.toLocaleDateString('es-CO'),
+      'Días restantes': diff
+    }
+
+    if (diff < 0) {
+      vencidos.push(registro)
+    } else if (diff <= 30) {
+      proximos.push(registro)
+    } else {
+      activos.push(registro)
+    }
+  })
+
+  const workbook = XLSX.utils.book_new()
+
+  if (activos.length > 0) {
+    const wsActivos = XLSX.utils.json_to_sheet(activos)
+    XLSX.utils.book_append_sheet(workbook, wsActivos, 'Activos')
+  }
+
+  if (proximos.length > 0) {
+    const wsProx = XLSX.utils.json_to_sheet(proximos)
+    XLSX.utils.book_append_sheet(workbook, wsProx, 'Próximos')
+  }
+
+  if (vencidos.length > 0) {
+    const wsVenc = XLSX.utils.json_to_sheet(vencidos)
+    XLSX.utils.book_append_sheet(workbook, wsVenc, 'Vencidos')
+  }
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  })
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+
+  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0,10)}.xlsx`)
+}
+
   const cargarExcel = async (e) => {
   try {
     const file = e.target.files?.[0]
@@ -256,65 +314,6 @@ export default function AdminPage() {
     mostrarMensaje('Error general al cargar Excel', 'error')
   }
 }
-
-  const hoy = new Date()
-  const activos = []
-  const proximos = []
-  const vencidos = []
-
-  egresados.forEach(e => {
-    if (!e.fecha_vencimiento) return
-
-    const fecha = new Date(e.fecha_vencimiento)
-    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24))
-
-    const registro = {
-      Cedula: e.cedula,
-      Nombre: e.nombre_completo,
-      Email: e.email || '',
-      Estado: e.estado,
-      'Fecha vencimiento': fecha.toLocaleDateString('es-CO'),
-      'Días restantes': diff
-    }
-
-    if (diff < 0) {
-      vencidos.push(registro)
-    } else if (diff <= 30) {
-      proximos.push(registro)
-    } else {
-      activos.push(registro)
-    }
-  })
-
-  const workbook = XLSX.utils.book_new()
-
-  if (activos.length > 0) {
-    const wsActivos = XLSX.utils.json_to_sheet(activos)
-    XLSX.utils.book_append_sheet(workbook, wsActivos, 'Activos')
-  }
-
-  if (proximos.length > 0) {
-    const wsProx = XLSX.utils.json_to_sheet(proximos)
-    XLSX.utils.book_append_sheet(workbook, wsProx, 'Próximos')
-  }
-
-  if (vencidos.length > 0) {
-    const wsVenc = XLSX.utils.json_to_sheet(vencidos)
-    XLSX.utils.book_append_sheet(workbook, wsVenc, 'Vencidos')
-  }
-
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array'
-  })
-
-  const blob = new Blob([excelBuffer], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  })
-
-  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0,10)}.xlsx`)
-}
-
 
   const s = {
     page: { maxWidth: 960, margin: '0 auto', padding: '40px 24px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: '#111' },
