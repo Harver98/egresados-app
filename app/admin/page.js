@@ -187,6 +187,71 @@ export default function AdminPage() {
     return egresados.length
   }
 
+  const exportarReporteEstados = () => {
+  if (egresados.length === 0) {
+    mostrarMensaje('No hay datos para exportar', 'error')
+    return
+  }
+
+  const hoy = new Date()
+
+  const activos = []
+  const proximos = []
+  const vencidos = []
+
+  egresados.forEach(e => {
+    if (!e.fecha_vencimiento) return
+
+    const fecha = new Date(e.fecha_vencimiento)
+    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24))
+
+    const registro = {
+      Cedula: e.cedula,
+      Nombre: e.nombre_completo,
+      Email: e.email || '',
+      Estado: e.estado,
+      'Fecha vencimiento': fecha.toLocaleDateString('es-CO'),
+      'Días restantes': diff
+    }
+
+    if (diff < 0) {
+      vencidos.push(registro)
+    } else if (diff <= 30) {
+      proximos.push(registro)
+    } else {
+      activos.push(registro)
+    }
+  })
+
+  const workbook = XLSX.utils.book_new()
+
+  if (activos.length > 0) {
+    const wsActivos = XLSX.utils.json_to_sheet(activos)
+    XLSX.utils.book_append_sheet(workbook, wsActivos, 'Activos')
+  }
+
+  if (proximos.length > 0) {
+    const wsProx = XLSX.utils.json_to_sheet(proximos)
+    XLSX.utils.book_append_sheet(workbook, wsProx, 'Próximos')
+  }
+
+  if (vencidos.length > 0) {
+    const wsVenc = XLSX.utils.json_to_sheet(vencidos)
+    XLSX.utils.book_append_sheet(workbook, wsVenc, 'Vencidos')
+  }
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  })
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+
+  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0,10)}.xlsx`)
+}
+
   const exportarPorFechas = () => {
   if (!fechaInicio || !fechaFin) {
     mostrarMensaje('Selecciona ambas fechas', 'error')
@@ -358,6 +423,9 @@ export default function AdminPage() {
           <p style={s.headerSub}>{egresados.length} egresado{egresados.length !== 1 ? 's' : ''} registrado{egresados.length !== 1 ? 's' : ''}</p>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <button onClick={exportarReporteEstados} style={s.btnSecondary}>
+            Reporte por estado
+          </button>
           <button onClick={() => setMostrarFormulario(!mostrarFormulario)} style={s.btnPrimary}>
             + Nuevo egresado
           </button>
