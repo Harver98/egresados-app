@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
 
 export default function AdminPage() {
   const [session, setSession] = useState(null)
@@ -17,6 +19,8 @@ export default function AdminPage() {
   const [alertas, setAlertas] = useState([])
   const [mostrarAlertas, setMostrarAlertas] = useState(true)
   const [filtroVigencia, setFiltroVigencia] = useState('todos')
+  const [fechaInicio, setFechaInicio] = useState('')
+  const [fechaFin, setFechaFin] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -183,6 +187,51 @@ export default function AdminPage() {
     return egresados.length
   }
 
+  const exportarPorFechas = () => {
+  if (!fechaInicio || !fechaFin) {
+    mostrarMensaje('Selecciona ambas fechas', 'error')
+    return
+  }
+
+  const inicio = new Date(fechaInicio)
+  const fin = new Date(fechaFin)
+  fin.setHours(23, 59, 59, 999)
+
+  const filtradosFecha = egresados.filter(e => {
+    if (!e.fecha_vencimiento) return false
+    const fecha = new Date(e.fecha_vencimiento)
+    return fecha >= inicio && fecha <= fin
+  })
+
+  if (filtradosFecha.length === 0) {
+    mostrarMensaje('No hay datos en ese rango', 'error')
+    return
+  }
+
+  const data = filtradosFecha.map(e => ({
+    Cedula: e.cedula,
+    Nombre: e.nombre_completo,
+    Email: e.email || '',
+    Estado: e.estado,
+    'Fecha vencimiento': new Date(e.fecha_vencimiento).toLocaleDateString('es-CO')
+  }))
+
+  const worksheet = XLSX.utils.json_to_sheet(data)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte')
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  })
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
+
+  saveAs(blob, `reporte_${fechaInicio}_a_${fechaFin}.xlsx`)
+}
+
   const s = {
     page: { maxWidth: 960, margin: '0 auto', padding: '40px 24px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: '#111' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, paddingBottom: 20, borderBottom: '1px solid #e5e7eb' },
@@ -278,6 +327,31 @@ export default function AdminPage() {
     <main style={s.page}>
 
       {/* HEADER */}
+      <div style={{
+  display: 'flex',
+  gap: 10,
+  alignItems: 'center',
+  marginBottom: 20,
+  flexWrap: 'wrap'
+}}>
+  <input
+    type="date"
+    value={fechaInicio}
+    onChange={(e) => setFechaInicio(e.target.value)}
+    style={s.input}
+  />
+
+  <input
+    type="date"
+    value={fechaFin}
+    onChange={(e) => setFechaFin(e.target.value)}
+    style={s.input}
+  />
+
+  <button onClick={exportarPorFechas} style={s.btnPrimary}>
+    Generar reporte por fechas
+  </button>
+</div>
       <div style={s.header}>
         <div style={s.headerLeft}>
           <h1 style={s.headerTitle}>Gestión de egresados</h1>
