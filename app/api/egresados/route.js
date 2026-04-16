@@ -30,21 +30,34 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
-  const { id, estado } = await request.json()
+  const { id, estado, cedula, nombre_completo, email } = await request.json()
 
-  if (!['Activo', 'Inactivo'].includes(estado)) {
-    return NextResponse.json({ error: 'Estado inválido.' }, { status: 400 })
+  if (!id) {
+    return NextResponse.json({ error: 'ID requerido.' }, { status: 400 })
   }
+
+  const updates = { updated_at: new Date().toISOString() }
+
+  if (estado !== undefined) {
+    if (!['Activo', 'Inactivo'].includes(estado)) {
+      return NextResponse.json({ error: 'Estado inválido.' }, { status: 400 })
+    }
+    updates.estado = estado
+  }
+
+  if (cedula !== undefined) updates.cedula = cedula.trim()
+  if (nombre_completo !== undefined) updates.nombre_completo = nombre_completo.trim()
+  if (email !== undefined) updates.email = email.trim()
 
   const { data, error } = await supabaseAdmin
     .from('egresados')
-    .update({ estado, updated_at: new Date().toISOString() })
+    .update(updates)
     .eq('id', id)
     .select()
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json({ ...data, mensaje: 'Egresado actualizado correctamente' })
 }
 
 export async function DELETE(request) {

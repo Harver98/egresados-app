@@ -19,6 +19,8 @@ export default function AdminPage() {
   const [alertas, setAlertas] = useState([])
   const [mostrarAlertas, setMostrarAlertas] = useState(true)
   const [filtroVigencia, setFiltroVigencia] = useState('todos')
+  const [egresadoEditando, setEgresadoEditando] = useState(null)
+  const [edicion, setEdicion] = useState({ cedula: '', nombre_completo: '', email: '' })
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session))
@@ -86,6 +88,29 @@ export default function AdminPage() {
     })
     cargarEgresados()
   }
+
+  const guardarEdicion = async (e) => {
+  e.preventDefault()
+  if (!edicion.cedula || !edicion.nombre_completo) {
+    mostrarMensaje('Cédula y nombre son obligatorios', 'error')
+    return
+  }
+  const res = await fetch('/api/egresados', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: egresadoEditando,
+      cedula: edicion.cedula.trim(),
+      nombre_completo: edicion.nombre_completo.trim(),
+      email: edicion.email.trim()
+    })
+  })
+  const data = await res.json()
+  mostrarMensaje(data.mensaje || data.error, data.error ? 'error' : 'success')
+  setEgresadoEditando(null)
+  cargarEgresados()
+}
+
 
   const eliminarEgresado = async (id) => {
     const confirmar = confirm('¿Seguro que deseas eliminar este egresado?')
@@ -509,6 +534,33 @@ export default function AdminPage() {
       )}
 
       {/* FORMULARIO */}
+      {/* FORMULARIO EDICIÓN */}
+      {egresadoEditando && (
+        <div style={s.formCard}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: 0, fontWeight: 500, fontSize: 14, color: '#111' }}>Editar egresado</p>
+              <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6b7280' }}>Modifica los campos y guarda los cambios.</p>
+            </div>
+            <button onClick={() => setEgresadoEditando(null)} style={{ ...s.btnGhost, fontSize: 16, padding: '4px 10px' }}>✕</button>
+          </div>
+          <form onSubmit={guardarEdicion} style={s.formRow}>
+            <input placeholder="Cédula *" value={edicion.cedula}
+              onChange={e => setEdicion({ ...edicion, cedula: e.target.value })}
+              style={{ ...s.input, flex: '1 1 140px', width: 'auto' }} />
+            <input placeholder="Nombre completo *" value={edicion.nombre_completo}
+              onChange={e => setEdicion({ ...edicion, nombre_completo: e.target.value })}
+              style={{ ...s.input, flex: '2 1 200px', width: 'auto' }} />
+            <input placeholder="Correo electrónico" value={edicion.email}
+              onChange={e => setEdicion({ ...edicion, email: e.target.value })}
+              style={{ ...s.input, flex: '2 1 180px', width: 'auto' }} />
+            <button type="submit" style={{ ...s.btnPrimary, flexShrink: 0 }}>
+              Guardar cambios
+            </button>
+          </form>
+        </div>
+      )}
+
       {mostrarFormulario && (
         <div style={s.formCard}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -596,6 +648,15 @@ export default function AdminPage() {
                 </td>
                 <td style={s.td}>
                   <div style={s.accionesRow}>
+                  <button
+                        onClick={() => {
+                          setEgresadoEditando(eg.id)
+                          setEdicion({ cedula: eg.cedula, nombre_completo: eg.nombre_completo, email: eg.email || '' })
+                          setMostrarFormulario(false)
+                        }}
+                        style={{ padding: '5px 10px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: 12, cursor: 'pointer' }}>
+                        Editar
+                      </button>
                     <button
                       onClick={() => cambiarEstado(eg.id, eg.estado)}
                       style={eg.estado === 'Activo' ? s.btnGhost : s.btnSuccess}>
