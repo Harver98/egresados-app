@@ -220,8 +220,23 @@ export default function AdminPage() {
   const activos = []
   const proximos = []
   const vencidos = []
+  const inactivos = []
 
   egresados.forEach(e => {
+    if (e.estado === 'Inactivo') {
+      inactivos.push({
+        Cedula: e.cedula,
+        Nombre: e.nombre_completo,
+        Email: e.email || '',
+        Estado: e.estado,
+        'Fecha vencimiento': e.fecha_vencimiento
+          ? new Date(e.fecha_vencimiento).toLocaleDateString('es-CO')
+          : 'Sin fecha',
+        'Días restantes': '—'
+      })
+      return 
+    }
+
     if (!e.fecha_vencimiento) return
 
     const fecha = new Date(e.fecha_vencimiento)
@@ -236,42 +251,31 @@ export default function AdminPage() {
       'Días restantes': diff
     }
 
-    if (diff < 0) {
-      vencidos.push(registro)
-    } else if (diff <= 30) {
-      proximos.push(registro)
-    } else {
-      activos.push(registro)
-    }
+    if (diff < 0) vencidos.push(registro)
+    else if (diff <= 30) proximos.push(registro)
+    else activos.push(registro)
   })
 
   const workbook = XLSX.utils.book_new()
 
   if (activos.length > 0) {
-    const wsActivos = XLSX.utils.json_to_sheet(activos)
-    XLSX.utils.book_append_sheet(workbook, wsActivos, 'Activos')
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(activos), 'Activos')
   }
-
   if (proximos.length > 0) {
-    const wsProx = XLSX.utils.json_to_sheet(proximos)
-    XLSX.utils.book_append_sheet(workbook, wsProx, 'Próximos')
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(proximos), 'Próximos')
   }
-
   if (vencidos.length > 0) {
-    const wsVenc = XLSX.utils.json_to_sheet(vencidos)
-    XLSX.utils.book_append_sheet(workbook, wsVenc, 'Vencidos')
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vencidos), 'Vencidos')
+  }
+  if (inactivos.length > 0) { 
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(inactivos), 'Inactivos')
   }
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array'
-  })
-
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
   const blob = new Blob([excelBuffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   })
-
-  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0,10)}.xlsx`)
+  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0, 10)}.xlsx`)
 }
 
   const cargarExcel = async (e) => {
