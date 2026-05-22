@@ -13,114 +13,136 @@ export default function ConsultaPage() {
     setError('')
     setResultado(null)
 
-    const res = await fetch(`/api/consultar?cedula=${cedula}`)
-    const data = await res.json()
+    try {
+      const res = await fetch(`/api/consultar?cedula=${cedula}`)
+      const data = await res.json()
 
-    if (!res.ok) setError(data.error)
-    else setResultado(data)
-    setCargando(false)
+      if (!res.ok) setError(data.error || 'Ocurrió un error en la consulta')
+      else setResultado(data)
+    } catch (err) {
+      setError('No se pudo conectar con el servidor')
+    } finally {
+      setCargando(false)
+    }
   }
 
   const activo = resultado?.estado === 'Activo'
+  const brandColor = '#be1522'
 
   return (
     <main style={{
       minHeight: '100vh',
-      background: '#f9fafb',
+      background: '#f8fafc',
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      padding: '64px 24px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+      padding: '80px 24px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      <div style={{ width: '100%', maxWidth: 460 }}>
+      <div style={{ width: '100%', maxWidth: 450 }}>
 
-        {/* Brand */}
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+        {/* Brand / Encabezado */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
-            width: 52, height: 52,
-            background: '#eff6ff',
-            borderRadius: 14,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px',
-            border: '1px solid #bfdbfe'
+            width: 72,
+            height: 72,
+            background: '#fef2f2',
+            borderRadius: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 18px',
+            border: '1px solid #fee2e2',
+            boxShadow: '0 4px 12px rgba(190, 21, 34, 0.05)',
+            overflow: 'hidden'
           }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-            </svg>
+            {/* Si no tienes el logo aún, mostrará las letras "ASE" elegantemente */}
+            <img 
+              src="/logo.png" 
+              alt="Logo ASEDUIS" 
+              style={{ width: '85%', height: '85%', objectFit: 'contain' }}
+              onError={(e) => {
+                e.target.style.display = 'none'
+                e.target.parentNode.innerHTML = `<span style="color: ${brandColor}; font-weight: 700; font-size: 20px;">ASE</span>`
+              }}
+            />
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 600, margin: '0 0 6px', color: '#111' }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#1e293b', letterSpacing: '-0.02em' }}>
             ASEDUIS Bucaramanga
           </h1>
-          <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
-            Consulta de afiliación
+          <p style={{ fontSize: 14, color: '#64748b', margin: 0, fontWeight: 400 }}>
+            Consulta de estado de afliación
           </p>
         </div>
 
         {/* Formulario */}
         <div style={{
           background: '#fff',
-          border: '1px solid #e5e7eb',
-          borderRadius: 16,
-          padding: 28,
-          marginBottom: 16
+          border: '1px solid #e2e8f0',
+          borderRadius: 20,
+          padding: '32px 30px',
+          marginBottom: 16,
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.02)'
         }}>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 6, letterSpacing: '0.02em' }}>
-            Número de cédula
-          </label>
-          <form onSubmit={consultar} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <input
-              type="text"
-              placeholder="Ej: 1098765432"
-              value={cedula}
-              onChange={e => setCedula(e.target.value.replace(/\D/g, ''))}
-              maxLength={12}
-              style={{
-                width: '100%',
-                padding: '11px 14px',
-                fontSize: 15,
-                border: '1.5px solid #d1d5db',
-                borderRadius: 10,
-                boxSizing: 'border-box',
-                outline: 'none',
-                color: '#111',
-                background: '#fff',
-                letterSpacing: '0.05em',
-                fontFamily: 'monospace'
-              }}
-            />
+          <form onSubmit={consultar} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 8 }}>
+                Número de cédula
+              </label>
+              <input
+                type="text"
+                placeholder="Ej: 1098765432"
+                value={cedula}
+                onChange={e => setCedula(e.target.value.replace(/\D/g, ''))}
+                maxLength={12}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  fontSize: 16,
+                  border: '1.5px solid #cbd5e1',
+                  borderRadius: 12,
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  color: '#1e293b',
+                  background: '#fff',
+                  letterSpacing: '0.05em',
+                  fontFamily: 'monospace'
+                }}
+              />
+            </div>
+            
             <button
               type="submit"
               disabled={cargando || !cedula}
               style={{
                 width: '100%',
-                padding: '12px',
-                fontSize: 14,
-                fontWeight: 500,
-                background: cargando || !cedula ? '#93c5fd' : '#1d4ed8',
+                padding: '14px',
+                fontSize: 15,
+                fontWeight: 600,
+                background: cargando || !cedula ? '#fca5a5' : brandColor,
                 color: '#fff',
                 border: 'none',
-                borderRadius: 10,
+                borderRadius: 12,
                 cursor: cargando || !cedula ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 8
+                gap: 8,
+                boxShadow: cargando || !cedula ? 'none' : '0 4px 12px rgba(190, 21, 34, 0.2)'
               }}
             >
               {cargando ? (
                 <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: 'spin 1s linear infinite' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: 'spin 1s linear infinite' }}>
                     <path d="M21 12a9 9 0 11-6.219-8.56"/>
                   </svg>
-                  Consultando...
+                  Procesando consulta...
                 </>
               ) : (
                 <>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                  </svg>
+                  </</svg>
                   Consultar estado
                 </>
               )}
@@ -133,19 +155,19 @@ export default function ConsultaPage() {
           <div style={{
             padding: '14px 16px',
             background: '#fef2f2',
-            border: '1px solid #fecaca',
-            borderRadius: 12,
+            border: '1px solid #fca5a5',
+            borderRadius: 14,
             color: '#991b1b',
             fontSize: 14,
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            marginBottom: 12
+            marginBottom: 16
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
               <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
             </svg>
-            {error}
+            <span style={{ fontWeight: 500 }}>{error}</span>
           </div>
         )}
 
@@ -155,17 +177,17 @@ export default function ConsultaPage() {
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            padding: '12px 16px',
+            padding: '14px 16px',
             background: '#fffbeb',
-            border: '1px solid #fcd34d',
-            borderRadius: 12,
-            marginBottom: 12
+            border: '1px solid #fde68a',
+            borderRadius: 14,
+            marginBottom: 16
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0 }}>
               <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
               <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            <span style={{ fontSize: 13, color: '#92400e', fontWeight: 500 }}>
+            <span style={{ fontSize: 13, color: '#92400e', fontWeight: 500, lineHeight: '1.4' }}>
               {resultado.alerta_vencimiento}
             </span>
           </div>
@@ -175,27 +197,28 @@ export default function ConsultaPage() {
         {resultado && (
           <div style={{
             background: '#fff',
-            border: `1.5px solid ${activo ? '#bbf7d0' : '#fecaca'}`,
-            borderRadius: 16,
-            overflow: 'hidden'
+            border: '1px solid #e2e8f0',
+            borderRadius: 20,
+            overflow: 'hidden',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.02)'
           }}>
             {/* Banner estado */}
             <div style={{
               background: activo ? '#f0fdf4' : '#fef2f2',
-              padding: '14px 20px',
+              padding: '16px 20px',
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
+              gap: 12,
               borderBottom: `1px solid ${activo ? '#bbf7d0' : '#fecaca'}`
             }}>
               <div style={{
-                width: 32, height: 32,
+                width: 36, height: 36,
                 borderRadius: '50%',
                 background: activo ? '#dcfce7' : '#fee2e2',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={activo ? '#16a34a' : '#dc2626'} strokeWidth="2.5" strokeLinecap="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={activo ? '#16a34a' : '#dc2626'} strokeWidth="2.5" strokeLinecap="round">
                   {activo
                     ? <path d="M20 6 9 17l-5-5"/>
                     : <><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>
@@ -203,46 +226,34 @@ export default function ConsultaPage() {
                 </svg>
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: activo ? '#166534' : '#991b1b' }}>
-                  {activo ? 'Afiliación activa' : 'Afiliación inactiva'}
+                <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: activo ? '#14532d' : '#7f1d1d' }}>
+                  {activo ? 'Afiliación Activa' : 'Afiliación Inactiva'}
                 </p>
-                <p style={{ margin: '2px 0 0', fontSize: 11, color: activo ? '#16a34a' : '#dc2626' }}>
-                  {activo ? 'Al día con ASEDUIS' : 'Sin afiliación vigente'}
+                <p style={{ margin: '2px 0 0', fontSize: 12, color: activo ? '#16a34a' : '#dc2626' }}>
+                  {activo ? 'Al día con la asociación' : 'Sin membresía vigente'}
                 </p>
-              </div>
-              <div style={{
-                marginLeft: 'auto',
-                padding: '4px 12px',
-                borderRadius: 20,
-                background: activo ? '#dcfce7' : '#fee2e2',
-                fontSize: 11,
-                fontWeight: 600,
-                color: activo ? '#166534' : '#991b1b',
-                border: `1px solid ${activo ? '#86efac' : '#fca5a5'}`
-              }}>
-                {activo ? 'Activo' : 'Inactivo'}
               </div>
             </div>
 
-            {/* Datos */}
-            <div style={{ padding: '20px 20px 16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            {/* Datos del afiliado */}
+            <div style={{ padding: '24px 20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
                 <div style={{
-                  width: 44, height: 44,
-                  borderRadius: '50%',
-                  background: '#eff6ff',
+                  width: 48, height: 48,
+                  borderRadius: 12,
+                  background: '#fef2f2',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 15, fontWeight: 600, color: '#1d4ed8',
+                  fontSize: 16, fontWeight: 700, color: brandColor,
                   flexShrink: 0,
-                  border: '1px solid #bfdbfe'
+                  border: '1px solid #fee2e2'
                 }}>
                   {resultado.nombre_completo?.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase()}
                 </div>
                 <div>
-                  <p style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#111' }}>
+                  <p style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#1e293b', lineHeight: '1.2' }}>
                     {resultado.nombre_completo}
                   </p>
-                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6b7280', fontFamily: 'monospace' }}>
+                  <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b', fontFamily: 'monospace' }}>
                     C.C. {resultado.cedula}
                   </p>
                 </div>
@@ -253,18 +264,18 @@ export default function ConsultaPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  padding: '10px 14px',
+                  padding: '12px 14px',
                   background: '#f8fafc',
-                  borderRadius: 8,
-                  border: '1px solid #e5e7eb'
+                  borderRadius: 10,
+                  border: '1px solid #e2e8f0'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round">
                       <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                     </svg>
-                    <span style={{ fontSize: 12, color: '#6b7280' }}>Vigente hasta</span>
+                    <span style={{ fontSize: 13, color: '#64748b', fontWeight: 500 }}>Vigente hasta</span>
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: '#111' }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1e293b' }}>
                     {resultado.vigente_hasta}
                   </span>
                 </div>
@@ -273,8 +284,12 @@ export default function ConsultaPage() {
           </div>
         )}
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: '#9ca3af', marginTop: 28 }}>
-          ¿Inconvenientes? Contacta  3242606004
+        {/* Soporte / Footer */}
+        <p style={{ textAlign: 'center', fontSize: 13, color: '#94a3b8', marginTop: 32 }}>
+          ¿Tienes dudas? Contacta a soporte al{' '}
+          <a href="tel:3242606004" style={{ color: brandColor, textDecoration: 'none', fontWeight: 600 }}>
+            324 260 6004
+          </a>
         </p>
       </div>
 
