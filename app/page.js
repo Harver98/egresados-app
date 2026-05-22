@@ -62,11 +62,12 @@ export default function ConsultaPage() {
               }}
             />
           </div>
-
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#111', letterSpacing: '-0.02em' }}>
+            ASEDUIS BUCARAMANGA
+          </h1>
           <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
-            Consulta estado de afiliación
+            Consulta de afiliación
           </p>
-
         </div>
 
         {/* Formulario */}
