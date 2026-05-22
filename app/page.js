@@ -39,7 +39,7 @@ export default function ConsultaPage() {
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{
             width: '100%',
-            height: 90, // Aumentamos la altura para que respire
+            height: 150, // Aumentamos la altura para que respire
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
@@ -53,7 +53,7 @@ export default function ConsultaPage() {
               style={{ 
                 width: 'auto', 
                 height: '100%', 
-                maxHeight: 90, 
+                maxHeight: 150, 
                 objectFit: 'contain' 
               }}
               onError={(e) => {
@@ -69,7 +69,7 @@ export default function ConsultaPage() {
             Consulta de afiliación
           </p>
         </div>
-        
+
         {/* Formulario */}
         <div style={{
           background: '#fff',
