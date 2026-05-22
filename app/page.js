@@ -35,36 +35,41 @@ export default function ConsultaPage() {
     }}>
       <div style={{ width: '100%', maxWidth: 460 }}>
 
-        {/* Brand */}
+{/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{
-            width: 64, height: 64,
-            background: '#fef2f2',
-            borderRadius: 14,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px',
-              border: '1px solid #fee2e2',
+            width: '100%',
+            height: 90, // Aumentamos la altura para que respire
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            margin: '0 auto 20px',
             overflow: 'hidden'
           }}>
-            {/* Espacio optimizado para tu logo */}
+            {/* Espacio ampliado y optimizado para el logo real */}
             <img 
               src="/logo.png" 
               alt="Logo ASEDUIS" 
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              style={{ 
+                width: 'auto', 
+                height: '100%', 
+                maxHeight: 90, 
+                objectFit: 'contain' 
+              }}
               onError={(e) => {
                 e.target.style.display = 'none'
-                e.target.parentNode.innerHTML = '<span style="color: #be1522; font-weight: 700; font-size: 16px;">ASE</span>'
+                e.target.parentNode.innerHTML = '<div style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 14px; padding: 12px 24px; color: #be1522; font-weight: 700; font-size: 18px;">ASEDUIS</div>'
               }}
             />
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 600, margin: '0 0 6px', color: '#111' }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 6px', color: '#111', letterSpacing: '-0.02em' }}>
             ASEDUIS Bucaramanga
           </h1>
           <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>
             Consulta de afiliación
           </p>
         </div>
-
+        
         {/* Formulario */}
         <div style={{
           background: '#fff',
