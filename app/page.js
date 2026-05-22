@@ -50,7 +50,7 @@ export default function ConsultaPage() {
             <img 
               src="/logo.png" 
               alt="Logo ASEDUIS" 
-              style={{ width: '85%', height: '85%', objectFit: 'contain' }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               onError={(e) => {
                 e.target.style.display = 'none'
                 e.target.parentNode.innerHTML = '<span style="color: #be1522; font-weight: 700; font-size: 16px;">ASE</span>'
