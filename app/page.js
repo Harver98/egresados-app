@@ -48,7 +48,7 @@ export default function ConsultaPage() {
           }}>
             {/* Espacio optimizado para tu logo */}
             <img 
-              src="app\logo.png" 
+              src="/logo.png" 
               alt="Logo ASEDUIS" 
               style={{ width: '85%', height: '85%', objectFit: 'contain' }}
               onError={(e) => {
