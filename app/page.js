@@ -434,6 +434,7 @@ export default function ConsultaPage() {
           </svg>
           ¿Inconvenientes? Contacta al{' '}
           <strong style={{ color: '#52525b', fontWeight: 600 }}>324 260 6004</strong>
+          Copyright © 2026 • Diseñado y Desarrollado por Alejandro Sierra
         </p>
       </div>
 
