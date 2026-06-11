@@ -67,17 +67,13 @@ export default function AdminPage() {
   }
 
   const calcularDiasDesdeFecha = (fecha) => {
-  const hoy = new Date()
-  const base = new Date(fecha)
-
-  if (isNaN(base)) return ''
-
-  base.setDate(base.getDate() + 365)
-
-  const diff = Math.ceil((base - hoy) / (1000 * 60 * 60 * 24))
-  return diff > 0 ? diff : 0
+    const hoy = new Date()
+    const base = new Date(fecha)
+    if (isNaN(base)) return ''
+    base.setDate(base.getDate() + 365)
+    const diff = Math.ceil((base - hoy) / (1000 * 60 * 60 * 24))
+    return diff > 0 ? diff : 0
   }
-  
 
   const cambiarEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === 'Activo' ? 'Inactivo' : 'Activo'
@@ -90,27 +86,26 @@ export default function AdminPage() {
   }
 
   const guardarEdicion = async (e) => {
-  e.preventDefault()
-  if (!edicion.cedula || !edicion.nombre_completo) {
-    mostrarMensaje('Cédula y nombre son obligatorios', 'error')
-    return
-  }
-  const res = await fetch('/api/egresados', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id: egresadoEditando,
-      cedula: edicion.cedula.trim(),
-      nombre_completo: edicion.nombre_completo.trim(),
-      email: edicion.email.trim()
+    e.preventDefault()
+    if (!edicion.cedula || !edicion.nombre_completo) {
+      mostrarMensaje('Cédula y nombre son obligatorios', 'error')
+      return
+    }
+    const res = await fetch('/api/egresados', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: egresadoEditando,
+        cedula: edicion.cedula.trim(),
+        nombre_completo: edicion.nombre_completo.trim(),
+        email: edicion.email.trim()
+      })
     })
-  })
-  const data = await res.json()
-  mostrarMensaje(data.mensaje || data.error, data.error ? 'error' : 'success')
-  setEgresadoEditando(null)
-  cargarEgresados()
-}
-
+    const data = await res.json()
+    mostrarMensaje(data.mensaje || data.error, data.error ? 'error' : 'success')
+    setEgresadoEditando(null)
+    cargarEgresados()
+  }
 
   const eliminarEgresado = async (id) => {
     const confirmar = confirm('¿Seguro que deseas eliminar este egresado?')
@@ -211,138 +206,182 @@ export default function AdminPage() {
   }
 
   const exportarReporteEstados = () => {
-  if (egresados.length === 0) {
-    mostrarMensaje('No hay datos para exportar', 'error')
-    return
-  }
+    if (egresados.length === 0) {
+      mostrarMensaje('No hay datos para exportar', 'error')
+      return
+    }
 
-  const hoy = new Date()
-  const activos = []
-  const proximos = []
-  const vencidos = []
-  const inactivos = []
+    const hoy = new Date()
+    const activos = []
+    const proximos = []
+    const vencidos = []
+    const inactivos = []
 
-  egresados.forEach(e => {
-    if (e.estado === 'Inactivo') {
-      inactivos.push({
+    egresados.forEach(e => {
+      if (e.estado === 'Inactivo') {
+        inactivos.push({
+          Cedula: e.cedula,
+          Nombre: e.nombre_completo,
+          Email: e.email || '',
+          Estado: e.estado,
+          'Fecha vencimiento': e.fecha_vencimiento
+            ? new Date(e.fecha_vencimiento).toLocaleDateString('es-CO')
+            : 'Sin fecha',
+          'Días restantes': '—'
+        })
+        return
+      }
+
+      if (!e.fecha_vencimiento) return
+
+      const fecha = new Date(e.fecha_vencimiento)
+      const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24))
+
+      const registro = {
         Cedula: e.cedula,
         Nombre: e.nombre_completo,
         Email: e.email || '',
         Estado: e.estado,
-        'Fecha vencimiento': e.fecha_vencimiento
-          ? new Date(e.fecha_vencimiento).toLocaleDateString('es-CO')
-          : 'Sin fecha',
-        'Días restantes': '—'
-      })
-      return 
+        'Fecha vencimiento': fecha.toLocaleDateString('es-CO'),
+        'Días restantes': diff
+      }
+
+      if (diff < 0) vencidos.push(registro)
+      else if (diff <= 30) proximos.push(registro)
+      else activos.push(registro)
+    })
+
+    const workbook = XLSX.utils.book_new()
+
+    if (activos.length > 0) {
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(activos), 'Activos')
+    }
+    if (proximos.length > 0) {
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(proximos), 'Próximos')
+    }
+    if (vencidos.length > 0) {
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vencidos), 'Vencidos')
+    }
+    if (inactivos.length > 0) {
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(inactivos), 'Inactivos')
     }
 
-    if (!e.fecha_vencimiento) return
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    })
+    saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0, 10)}.xlsx`)
+  }
 
-    const fecha = new Date(e.fecha_vencimiento)
-    const diff = Math.ceil((fecha - hoy) / (1000 * 60 * 60 * 24))
-
-    const registro = {
-      Cedula: e.cedula,
-      Nombre: e.nombre_completo,
-      Email: e.email || '',
-      Estado: e.estado,
-      'Fecha vencimiento': fecha.toLocaleDateString('es-CO'),
-      'Días restantes': diff
+  const exportarDirectorio = () => {
+    if (egresados.length === 0) {
+      mostrarMensaje('No hay datos para exportar', 'error')
+      return
     }
 
-    if (diff < 0) vencidos.push(registro)
-    else if (diff <= 30) proximos.push(registro)
-    else activos.push(registro)
-  })
+    const colWidth = [{ wch: 15 }, { wch: 35 }, { wch: 35 }]
 
-  const workbook = XLSX.utils.book_new()
+    const activos = egresados
+      .filter(e => e.estado === 'Activo')
+      .map(e => ({
+        'Cédula': e.cedula,
+        'Nombre completo': e.nombre_completo,
+        'Correo electrónico': e.email || ''
+      }))
 
-  if (activos.length > 0) {
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(activos), 'Activos')
-  }
-  if (proximos.length > 0) {
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(proximos), 'Próximos')
-  }
-  if (vencidos.length > 0) {
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vencidos), 'Vencidos')
-  }
-  if (inactivos.length > 0) { 
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(inactivos), 'Inactivos')
-  }
+    const inactivos = egresados
+      .filter(e => e.estado === 'Inactivo')
+      .map(e => ({
+        'Cédula': e.cedula,
+        'Nombre completo': e.nombre_completo,
+        'Correo electrónico': e.email || ''
+      }))
 
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
-  const blob = new Blob([excelBuffer], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  })
-  saveAs(blob, `reporte_estados_${new Date().toISOString().slice(0, 10)}.xlsx`)
-}
+    const workbook = XLSX.utils.book_new()
+
+    if (activos.length > 0) {
+      const ws = XLSX.utils.json_to_sheet(activos)
+      ws['!cols'] = colWidth
+      XLSX.utils.book_append_sheet(workbook, ws, 'Activos')
+    }
+
+    if (inactivos.length > 0) {
+      const ws = XLSX.utils.json_to_sheet(inactivos)
+      ws['!cols'] = colWidth
+      XLSX.utils.book_append_sheet(workbook, ws, 'Inactivos')
+    }
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    })
+    saveAs(blob, `directorio_egresados_${new Date().toISOString().slice(0, 10)}.xlsx`)
+  }
 
   const cargarExcel = async (e) => {
-  try {
-    const file = e.target.files?.[0]
-    if (!file) return
+    try {
+      const file = e.target.files?.[0]
+      if (!file) return
 
-    const reader = new FileReader()
+      const reader = new FileReader()
 
-    reader.onload = async (evt) => {
-      try {
-        const data = new Uint8Array(evt.target.result)
-        const workbook = XLSX.read(data, { type: 'array' })
-        const sheet = workbook.Sheets[workbook.SheetNames[0]]
+      reader.onload = async (evt) => {
+        try {
+          const data = new Uint8Array(evt.target.result)
+          const workbook = XLSX.read(data, { type: 'array' })
+          const sheet = workbook.Sheets[workbook.SheetNames[0]]
+          const jsonData = XLSX.utils.sheet_to_json(sheet)
 
-        const jsonData = XLSX.utils.sheet_to_json(sheet)
-
-        if (!jsonData.length) {
-          mostrarMensaje('El archivo está vacío', 'error')
-          return
-        }
-
-        let agregados = 0
-        let errores = 0
-
-        for (const fila of jsonData) {
-          const cedula = fila['Cédula'] || fila['Cedula']
-          const nombre = fila['Nombre Completo']
-          const correo = fila['Correo']
-
-          if (!cedula || !nombre) {
-            errores++
-            continue
+          if (!jsonData.length) {
+            mostrarMensaje('El archivo está vacío', 'error')
+            return
           }
 
-          try {
-            const res = await fetch('/api/egresados', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                cedula: cedula.toString().trim(),
-                nombre_completo: nombre.toString().trim(),
-                email: correo ? correo.toString().trim() : ''
+          let agregados = 0
+          let errores = 0
+
+          for (const fila of jsonData) {
+            const cedula = fila['Cédula'] || fila['Cedula']
+            const nombre = fila['Nombre Completo']
+            const correo = fila['Correo']
+
+            if (!cedula || !nombre) {
+              errores++
+              continue
+            }
+
+            try {
+              const res = await fetch('/api/egresados', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  cedula: cedula.toString().trim(),
+                  nombre_completo: nombre.toString().trim(),
+                  email: correo ? correo.toString().trim() : ''
+                })
               })
-            })
 
-            if (res.ok) agregados++
-            else errores++
-          } catch {
-            errores++
+              if (res.ok) agregados++
+              else errores++
+            } catch {
+              errores++
+            }
           }
+
+          mostrarMensaje(`✔ ${agregados} agregados | ❌ ${errores} errores`)
+          cargarEgresados()
+        } catch (err) {
+          console.error(err)
+          mostrarMensaje('Error leyendo el archivo', 'error')
         }
-
-        mostrarMensaje(`✔ ${agregados} agregados | ❌ ${errores} errores`)
-        cargarEgresados()
-      } catch (err) {
-        console.error(err)
-        mostrarMensaje('Error leyendo el archivo', 'error')
       }
-    }
 
-    reader.readAsArrayBuffer(file)
-  } catch (error) {
-    console.error(error)
-    mostrarMensaje('Error general al cargar Excel', 'error')
+      reader.readAsArrayBuffer(file)
+    } catch (error) {
+      console.error(error)
+      mostrarMensaje('Error general al cargar Excel', 'error')
+    }
   }
-}
 
   const s = {
     page: { maxWidth: 960, margin: '0 auto', padding: '40px 24px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', color: '#111' },
@@ -388,11 +427,11 @@ export default function AdminPage() {
   const filtroBtnStyle = (valor) => {
     const activo = filtroVigencia === valor
     const colores = {
-      todos:   { bg: '#1d4ed8', color: '#fff', border: 'none' },
-      activo:  { bg: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7' },
-      inactivo:{ bg: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db' },
-      vencido: { bg: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5' },
-      proximo: { bg: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d' },
+      todos:    { bg: '#1d4ed8', color: '#fff', border: 'none' },
+      activo:   { bg: '#d1fae5', color: '#065f46', border: '1px solid #6ee7b7' },
+      inactivo: { bg: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db' },
+      vencido:  { bg: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5' },
+      proximo:  { bg: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d' },
     }
     return {
       padding: '6px 14px',
@@ -444,7 +483,10 @@ export default function AdminPage() {
           <h1 style={s.headerTitle}>Gestión de egresados</h1>
           <p style={s.headerSub}>{egresados.length} egresado{egresados.length !== 1 ? 's' : ''} registrado{egresados.length !== 1 ? 's' : ''}</p>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <button onClick={exportarDirectorio} style={s.btnSecondary}>
+            Directorio
+          </button>
           <button onClick={exportarReporteEstados} style={s.btnSecondary}>
             Reporte por estado
           </button>
@@ -455,21 +497,18 @@ export default function AdminPage() {
             Cerrar sesión
           </button>
           <input
-              type="file"
-              accept=".xlsx, .xls"
-              onChange={cargarExcel}
-              style={{ display: 'none' }}
-              id="inputExcel"
-            />
-
-            <label htmlFor="inputExcel" style={s.btnSecondary}>
-              📂 Cargar Excel
-            </label>
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={cargarExcel}
+            style={{ display: 'none' }}
+            id="inputExcel"
+          />
+          <label htmlFor="inputExcel" style={s.btnSecondary}>
+            📂 Cargar Excel
+          </label>
         </div>
       </div>
-      
 
-      
       {/* PANEL DE ALERTAS */}
       {mostrarAlertas && alertas.length > 0 && (
         <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '16px 20px', marginBottom: 24 }}>
@@ -537,7 +576,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* FORMULARIO */}
       {/* FORMULARIO EDICIÓN */}
       {egresadoEditando && (
         <div style={s.formCard}>
@@ -565,6 +603,7 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* FORMULARIO NUEVO */}
       {mostrarFormulario && (
         <div style={s.formCard}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -594,11 +633,11 @@ export default function AdminPage() {
       {/* FILTROS */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
         {[
-          { valor: 'todos',   label: 'Todos' },
-          { valor: 'activo',  label: 'Activos' },
-          { valor: 'inactivo',label: 'Inactivos' },
-          { valor: 'vencido', label: 'Vencidos' },
-          { valor: 'proximo', label: 'Próximos a vencer' },
+          { valor: 'todos',    label: 'Todos' },
+          { valor: 'activo',   label: 'Activos' },
+          { valor: 'inactivo', label: 'Inactivos' },
+          { valor: 'vencido',  label: 'Vencidos' },
+          { valor: 'proximo',  label: 'Próximos a vencer' },
         ].map(({ valor, label }) => (
           <button key={valor} onClick={() => setFiltroVigencia(valor)} style={filtroBtnStyle(valor)}>
             {label}
@@ -652,41 +691,32 @@ export default function AdminPage() {
                 </td>
                 <td style={s.td}>
                   <div style={s.accionesRow}>
-                  <button
-                        onClick={() => {
-                          setEgresadoEditando(eg.id)
-                          setEdicion({ cedula: eg.cedula, nombre_completo: eg.nombre_completo, email: eg.email || '' })
-                          setMostrarFormulario(false)
-                        }}
-                        style={{ padding: '5px 10px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: 12, cursor: 'pointer' }}>
-                        Editar
-                      </button>
+                    <button
+                      onClick={() => {
+                        setEgresadoEditando(eg.id)
+                        setEdicion({ cedula: eg.cedula, nombre_completo: eg.nombre_completo, email: eg.email || '' })
+                        setMostrarFormulario(false)
+                      }}
+                      style={{ padding: '5px 10px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe', borderRadius: 6, fontSize: 12, cursor: 'pointer' }}>
+                      Editar
+                    </button>
                     <button
                       onClick={() => cambiarEstado(eg.id, eg.estado)}
                       style={eg.estado === 'Activo' ? s.btnGhost : s.btnSuccess}>
                       {eg.estado === 'Activo' ? 'Desactivar' : 'Activar'}
                     </button>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#f3f4f6', borderRadius: 6, padding: '3px 6px' }}>
-                     <input
-                      type="date"
-                      value={fechasBase[eg.id] || ''}
-                      onChange={(e) => {
-                        const fecha = e.target.value
-
-                        setFechasBase(prev => ({
-                          ...prev,
-                          [eg.id]: fecha
-                        }))
-
-                        const diasCalculados = calcularDiasDesdeFecha(fecha)
-
-                        setDias(prev => ({
-                          ...prev,
-                          [eg.id]: diasCalculados
-                        }))
-                      }}
-                      style={{ ...s.inputSmall, width: 130 }}
-                      /> 
+                      <input
+                        type="date"
+                        value={fechasBase[eg.id] || ''}
+                        onChange={(e) => {
+                          const fecha = e.target.value
+                          setFechasBase(prev => ({ ...prev, [eg.id]: fecha }))
+                          const diasCalculados = calcularDiasDesdeFecha(fecha)
+                          setDias(prev => ({ ...prev, [eg.id]: diasCalculados }))
+                        }}
+                        style={{ ...s.inputSmall, width: 130 }}
+                      />
                       <input
                         type="number"
                         placeholder="Días"

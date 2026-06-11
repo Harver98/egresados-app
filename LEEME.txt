@@ -1,0 +1,92 @@
+═══════════════════════════════════════════════════════
+  APP EGRESADOS ASEDUIS — Instrucciones de instalación
+═══════════════════════════════════════════════════════
+
+PASO 1 — Preparar Supabase
+──────────────────────────
+1. Ve a supabase.com → New project → nombre: egresados-aseduis
+2. Espera que inicie (1-2 min)
+3. Ve a SQL Editor → New query
+4. Abre el archivo supabase/schema.sql con bloc de notas
+5. Copia todo (Ctrl+A → Ctrl+C) y pega en el SQL Editor → Run
+6. Ve a Storage → New bucket → nombre: fotos-egresados → Public: ON
+7. Ve a Settings → API → copia:
+   - Project URL
+   - anon public key
+
+PASO 2 — Configurar el proyecto
+────────────────────────────────
+1. Renombra .env.example a .env
+2. Abre .env y reemplaza:
+   EXPO_PUBLIC_SUPABASE_URL=<tu Project URL>
+   EXPO_PUBLIC_SUPABASE_ANON_KEY=<tu anon key>
+   EXPO_PUBLIC_CONVENIOS_URL=<URL de convenios de tu institución>
+
+PASO 3 — Instalar dependencias
+────────────────────────────────
+Abre VS Code en esta carpeta → Terminal → ejecuta:
+
+  npm install
+
+Luego:
+
+  npx expo install
+
+PASO 4 — Correr la app
+───────────────────────
+  npx expo start
+
+Escanea el QR con Expo Go en tu celular.
+(Expo Go debe estar actualizado a la última versión)
+
+PASO 5 — Crear el primer administrador
+────────────────────────────────────────
+En Supabase → Authentication → Users → Add user:
+  Email:    admin@aseduis.edu.co
+  Password: (la que quieras)
+
+Luego en SQL Editor ejecuta:
+  INSERT INTO public.administradores (user_id, cedula, nombre_completo, email)
+  SELECT id, '1000000001', 'Administrador Principal', email
+  FROM auth.users WHERE email = 'admin@aseduis.edu.co';
+
+PASO 6 — Crear egresado de prueba
+───────────────────────────────────
+En Supabase → Authentication → Users → Add user:
+  Email:    prueba@aseduis.edu.co
+  Password: Test1234!
+
+Luego en SQL Editor:
+  INSERT INTO public.egresados
+    (user_id, cedula, nombre_completo, email, estado, fecha_vencimiento, qr_uuid)
+  SELECT id, '1098765432', 'María García López', email, 'activo', '2026-12-31', uuid_generate_v4()
+  FROM auth.users WHERE email = 'prueba@aseduis.edu.co';
+
+Ingresar a la app con:
+  Cédula:     1098765432
+  Contraseña: Test1234!
+
+═══════════════════════════════════════════════════════
+  ESTRUCTURA DEL PROYECTO
+═══════════════════════════════════════════════════════
+
+egresados-app/
+├── .env.example          → renombrar a .env y configurar
+├── App.tsx               → punto de entrada
+├── app.json              → config Expo
+├── package.json          → dependencias
+├── supabase/
+│   └── schema.sql        → base de datos completa
+└── src/
+    ├── lib/
+    │   ├── supabase.ts   → cliente Supabase
+    │   └── theme.ts      → colores #BE1522
+    ├── types/index.ts    → interfaces TypeScript
+    ├── hooks/useAuth.ts  → login por cédula
+    └── screens/
+        ├── auth/         → Login, Recuperar contraseña
+        ├── carnet/       → Carnet + reloj en tiempo real
+        ├── qr/           → Mi QR, Escáner, Resultado
+        ├── profile/      → Editar perfil + subir foto
+        ├── convenios/    → Enlace a sitio web
+        └── config/       → Configuración + cerrar sesión

@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Egresados ASEDUIS",
+    "slug": "egresados-aseduis",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#BE1522"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.aseduis.egresados",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Necesitamos la cámara para escanear códigos QR.",
+        "NSPhotoLibraryUsageDescription": "Necesitamos acceso a tus fotos para tu foto de perfil."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#BE1522"
+      },
+      "package": "com.aseduis.egresados",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permitir acceso a la cámara para escanear QR."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir acceso a las fotos para tu foto de perfil."
+        }
+      ]
+    ],
+    "assetBundlePatterns": ["**/*"]
+  }
+}
