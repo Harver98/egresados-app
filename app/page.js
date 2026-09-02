@@ -63,7 +63,7 @@ export default function ConsultaPage() {
       <div style={styles.wrapper}>
         <div style={styles.brand}>
           <div style={styles.logoWrap}>
-            <img src="/logo.png" alt="Logo ASEDUIS" style={styles.logoImg} onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="background:#fef2f2;border:1px solid #fee2e2;border-radius:14px;padding:12px 24px;color:#be1522;font-weight:700;font-size:18px;">ASEDUIS</div>' }} />
+            <img src="/logo_black.png" alt="Logo ASEDUIS" style={styles.logoImg} onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="background:#fef2f2;border:1px solid #fee2e2;border-radius:14px;padding:12px 24px;color:#be1522;font-weight:700;font-size:18px;">ASEDUIS</div>' }} />
           </div>
           <h1 style={styles.brandTitle}>ASEDUIS Bucaramanga</h1>
           <p style={styles.brandSub}>Portal de consulta de afiliación</p>
