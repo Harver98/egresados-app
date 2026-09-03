@@ -71,6 +71,7 @@ export default function EventoPage() {
     eventImageWrap: { width: '100%', aspectRatio: '2172 / 724', overflow: 'hidden', borderRadius: 14, marginBottom: 18 },
     eventImage: { width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center 40%', display: 'block' },
     tituloDescuentoBadge: { display: 'inline-block', fontSize: 12, fontWeight: 700, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', padding: '6px 14px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 0 14px' },
+    footer: { textAlign: 'center', fontSize: 12, color: '#a1a1aa', marginTop: 24 },
   }
 
   if (!evento) {
@@ -169,6 +170,9 @@ export default function EventoPage() {
             </a>
           </div>
         )}
+        <footer style={styles.footer}>
+          <span>Copyright © 2026 • Diseñado y Desarrollado por Alejandro Sierra</span>
+        </footer>
       </div>
     </main>
   )
