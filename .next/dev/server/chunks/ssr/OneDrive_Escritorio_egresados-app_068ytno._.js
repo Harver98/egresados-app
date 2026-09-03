@@ -6,8 +6,6 @@ module.exports = [
 __turbopack_context__.s([
     "eventos",
     ()=>eventos,
-    "formatoCOP",
-    ()=>formatoCOP,
     "getEvento",
     ()=>getEvento
 ]);
@@ -18,33 +16,16 @@ const eventos = [
         subtitulo: 'Interpretado por Flora Martínez',
         fecha: '21 de noviembre, 2026 · 8:00 pm',
         lugar: 'Auditorio Luis A. Calvo, Bucaramanga',
-        imagen: '/frida_libre.jpeg',
+        imagen: '/frida_libre.png',
         ticketUrl: 'https://boletaenlinea.co/los-eventos/frida-libre-con-flora-martinez-bucaramanga/',
         whatsappNumero: '573242606004',
         tituloDescuento: 'Descuento especial ASEDUIS',
         descuentoAsociado: 15,
-        cuponAsociado: 'FRIDA15',
-        localidades: [
-            {
-                nombre: 'Platea',
-                valor: 121000
-            },
-            {
-                nombre: 'Balcón',
-                valor: 110000
-            }
-        ]
+        cuponAsociado: 'FRIDA15'
     }
 ];
 function getEvento(slug) {
     return eventos.find((e)=>e.slug === slug) || null;
-}
-function formatoCOP(valor) {
-    return valor.toLocaleString('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        maximumFractionDigits: 0
-    });
 }
 }),
 "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
@@ -214,46 +195,22 @@ function EventoPage() {
             lineHeight: 1.55,
             margin: '0 0 20px'
         },
-        priceRow: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '9px 0',
-            borderBottom: '1px dashed #d1fae5'
-        },
-        priceName: {
-            fontSize: 13,
-            color: '#166534',
-            fontWeight: 600
-        },
-        priceOld: {
-            fontSize: 12,
-            color: '#a1a1aa',
-            textDecoration: 'line-through',
-            marginRight: 8
-        },
-        priceNew: {
-            fontSize: 15,
-            color: '#166534',
-            fontWeight: 700
-        },
         couponBox: {
-            marginTop: 14,
-            padding: '10px 14px',
+            marginTop: 4,
+            padding: '14px',
             background: '#dcfce7',
             border: '1px dashed #86efac',
             borderRadius: 9,
             textAlign: 'center'
         },
         couponLabel: {
-            fontSize: 10,
+            fontSize: 11,
             color: '#166534',
-            textTransform: 'uppercase',
-            letterSpacing: '0.06em',
-            margin: '0 0 2px'
+            fontWeight: 600,
+            margin: '0 0 4px'
         },
         couponCode: {
-            fontSize: 17,
+            fontSize: 19,
             fontWeight: 700,
             color: '#166534',
             fontFamily: '"Geist Mono", monospace',
@@ -311,14 +268,14 @@ function EventoPage() {
         },
         eventImageWrap: {
             width: '100%',
-            aspectRatio: '1920 / 500',
+            aspectRatio: '2172 / 724',
             overflow: 'hidden',
             borderRadius: 14,
             marginBottom: 18
         },
         eventImage: {
             width: '100%',
-            height: '100%',
+            height: '110%',
             objectFit: 'cover',
             objectPosition: 'center 40%',
             display: 'block'
@@ -346,17 +303,17 @@ function EventoPage() {
                     children: "Evento no encontrado."
                 }, void 0, false, {
                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                    lineNumber: 84,
+                    lineNumber: 80,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                lineNumber: 83,
+                lineNumber: 79,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-            lineNumber: 82,
+            lineNumber: 78,
             columnNumber: 7
         }, this);
     }
@@ -370,37 +327,34 @@ function EventoPage() {
                     children: [
                         evento.imagen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             style: styles.eventImageWrap,
-                            children: [
-                                " ",
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                    src: evento.imagen,
-                                    alt: evento.nombre,
-                                    style: styles.eventImage
-                                }, void 0, false, {
-                                    fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 94,
-                                    columnNumber: 66
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                src: evento.imagen,
+                                alt: evento.nombre,
+                                style: styles.eventImage
+                            }, void 0, false, {
+                                fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
+                                lineNumber: 92,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 94,
-                            columnNumber: 30
+                            lineNumber: 91,
+                            columnNumber: 13
                         }, this),
                         evento.tituloDescuento && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             style: styles.tituloDescuentoBadge,
                             children: evento.tituloDescuento
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 95,
-                            columnNumber: 39
+                            lineNumber: 96,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                             style: styles.eventTitle,
                             children: evento.nombre
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 96,
+                            lineNumber: 98,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -408,7 +362,7 @@ function EventoPage() {
                             children: evento.subtitulo
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 97,
+                            lineNumber: 99,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -416,7 +370,7 @@ function EventoPage() {
                             children: evento.lugar
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 98,
+                            lineNumber: 100,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -424,13 +378,13 @@ function EventoPage() {
                             children: evento.fecha
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 99,
+                            lineNumber: 101,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                    lineNumber: 93,
+                    lineNumber: 89,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -441,7 +395,7 @@ function EventoPage() {
                             children: "Verifica tu descuento — Número de cédula"
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 103,
+                            lineNumber: 105,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -457,7 +411,7 @@ function EventoPage() {
                                     style: styles.input
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 105,
+                                    lineNumber: 107,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -467,19 +421,19 @@ function EventoPage() {
                                     children: cargando ? 'Consultando...' : 'Verificar'
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 113,
+                                    lineNumber: 115,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 104,
+                            lineNumber: 106,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                    lineNumber: 102,
+                    lineNumber: 104,
                     columnNumber: 9
                 }, this),
                 consultado && esAsociado && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -503,18 +457,18 @@ function EventoPage() {
                                             d: "M20 6 9 17l-5-5"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                            lineNumber: 124,
-                                            columnNumber: 21
+                                            lineNumber: 126,
+                                            columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 123,
-                                        columnNumber: 19
+                                        lineNumber: 125,
+                                        columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 122,
-                                    columnNumber: 17
+                                    lineNumber: 124,
+                                    columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -522,19 +476,19 @@ function EventoPage() {
                                         children: "Eres asociado ASEDUIS"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 128,
-                                        columnNumber: 19
+                                        lineNumber: 130,
+                                        columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 127,
-                                    columnNumber: 17
+                                    lineNumber: 129,
+                                    columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 121,
-                            columnNumber: 15
+                            lineNumber: 123,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             style: styles.statusSub,
@@ -546,77 +500,33 @@ function EventoPage() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 131,
-                            columnNumber: 15
+                            lineNumber: 133,
+                            columnNumber: 13
                         }, this),
-                        evento.localidades.map((loc, i)=>{
-                            const valorConDescuento = Math.round(loc.valor * (1 - evento.descuentoAsociado / 100));
-                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                style: styles.priceRow,
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        style: styles.priceName,
-                                        children: loc.nombre
-                                    }, void 0, false, {
-                                        fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 139,
-                                        columnNumber: 21
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                style: styles.priceOld,
-                                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$lib$2f$eventos$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatoCOP"])(loc.valor)
-                                            }, void 0, false, {
-                                                fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                                lineNumber: 141,
-                                                columnNumber: 23
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                style: styles.priceNew,
-                                                children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$lib$2f$eventos$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatoCOP"])(valorConDescuento)
-                                            }, void 0, false, {
-                                                fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                                lineNumber: 142,
-                                                columnNumber: 23
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 140,
-                                        columnNumber: 21
-                                    }, this)
-                                ]
-                            }, i, true, {
-                                fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                lineNumber: 138,
-                                columnNumber: 19
-                            }, this);
-                        }),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             style: styles.couponBox,
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     style: styles.couponLabel,
-                                    children: "Código de cupón"
+                                    children: "Aplica este código en la boletería"
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 149,
-                                    columnNumber: 17
+                                    lineNumber: 138,
+                                    columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     style: styles.couponCode,
                                     children: evento.cuponAsociado
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 150,
-                                    columnNumber: 17
+                                    lineNumber: 139,
+                                    columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 148,
-                            columnNumber: 15
+                            lineNumber: 137,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                             href: evento.ticketUrl,
@@ -626,14 +536,14 @@ function EventoPage() {
                             children: "Comprar boletas"
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 153,
-                            columnNumber: 15
+                            lineNumber: 142,
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                    lineNumber: 120,
-                    columnNumber: 13
+                    lineNumber: 122,
+                    columnNumber: 11
                 }, this),
                 consultado && !esAsociado && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     style: styles.resultCard(false),
@@ -658,26 +568,26 @@ function EventoPage() {
                                                 r: "10"
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                                lineNumber: 164,
-                                                columnNumber: 21
+                                                lineNumber: 153,
+                                                columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
                                                 d: "M12 8v4M12 16h.01"
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                                lineNumber: 164,
-                                                columnNumber: 53
+                                                lineNumber: 153,
+                                                columnNumber: 51
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 163,
-                                        columnNumber: 19
+                                        lineNumber: 152,
+                                        columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 162,
-                                    columnNumber: 17
+                                    lineNumber: 151,
+                                    columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -685,27 +595,27 @@ function EventoPage() {
                                         children: "No eres asociado ASEDUIS"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 168,
-                                        columnNumber: 19
+                                        lineNumber: 157,
+                                        columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 167,
-                                    columnNumber: 17
+                                    lineNumber: 156,
+                                    columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 161,
-                            columnNumber: 15
+                            lineNumber: 150,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             style: styles.statusSub,
                             children: "Si eres egresado UIS puedes aplicar a un descuento del 10%. Cuéntanos tu nombre completo y tu vínculo con la UIS para verificarlo por WhatsApp."
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 171,
-                            columnNumber: 15
+                            lineNumber: 160,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                             href: `https://wa.me/${evento.whatsappNumero}?text=${mensajeWhatsapp}`,
@@ -722,20 +632,20 @@ function EventoPage() {
                                         d: "M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm5.83 14.13c-.24.68-1.4 1.32-1.93 1.4-.5.08-1.13.11-1.82-.11-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.81 2.01.88 2.15.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.56.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.17-.19.71-.83.9-1.11.19-.28.38-.24.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.36z"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                        lineNumber: 175,
-                                        columnNumber: 85
+                                        lineNumber: 164,
+                                        columnNumber: 83
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                                    lineNumber: 175,
-                                    columnNumber: 17
+                                    lineNumber: 164,
+                                    columnNumber: 15
                                 }, this),
                                 "Escribir por WhatsApp"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 174,
-                            columnNumber: 15
+                            lineNumber: 163,
+                            columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Escritorio$2f$egresados$2d$app$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                             href: evento.ticketUrl,
@@ -745,24 +655,24 @@ function EventoPage() {
                             children: "Comprar boleta sin descuento"
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                            lineNumber: 178,
-                            columnNumber: 15
+                            lineNumber: 167,
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-                    lineNumber: 160,
-                    columnNumber: 13
+                    lineNumber: 149,
+                    columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-            lineNumber: 92,
+            lineNumber: 88,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/OneDrive/Escritorio/egresados-app/app/eventos/[slug]/page.js",
-        lineNumber: 91,
+        lineNumber: 87,
         columnNumber: 5
     }, this);
 }

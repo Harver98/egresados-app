@@ -68,8 +68,8 @@ export default function EventoPage() {
     ctaButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px', fontSize: 14, fontWeight: 600, background: '#be1522', color: '#fff', borderRadius: 10, textDecoration: 'none', boxSizing: 'border-box', marginTop: 16, boxShadow: '0 1px 2px rgba(0,0,0,0.08)' },
     ctaButtonOutline: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px', fontSize: 14, fontWeight: 600, background: '#ffffff', color: '#be1522', borderRadius: 10, textDecoration: 'none', boxSizing: 'border-box', border: '1.5px solid #be1522', marginTop: 10 },
     whatsappButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '13px', fontSize: 14, fontWeight: 600, background: '#25D366', color: '#fff', borderRadius: 10, textDecoration: 'none', boxSizing: 'border-box', boxShadow: '0 1px 2px rgba(0,0,0,0.08)' },
-    eventImageWrap: { width: '100%', aspectRatio: '1920 / 500', overflow: 'hidden', borderRadius: 14, marginBottom: 18 },
-    eventImage: { width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%', display: 'block' },
+    eventImageWrap: { width: '100%', aspectRatio: '2172 / 724', overflow: 'hidden', borderRadius: 14, marginBottom: 18 },
+    eventImage: { width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center 40%', display: 'block' },
     tituloDescuentoBadge: { display: 'inline-block', fontSize: 12, fontWeight: 700, color: '#166534', background: '#dcfce7', border: '1px solid #86efac', padding: '6px 14px', borderRadius: 20, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '4px 0 14px' },
   }
 
