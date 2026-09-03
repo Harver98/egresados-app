@@ -69,6 +69,7 @@ export default function EventoPage() {
     couponCode: { fontSize: 17, fontWeight: 700, color: '#166534', fontFamily: '"Geist Mono", monospace', letterSpacing: '0.05em' },
     ctaButton: { display: 'block', textAlign: 'center', marginTop: 16, width: '100%', padding: '12px', fontSize: 14, fontWeight: 600, background: '#be1522', color: '#fff', borderRadius: 9, textDecoration: 'none' },
     whatsappButton: { display: 'block', textAlign: 'center', marginTop: 16, width: '100%', padding: '12px', fontSize: 14, fontWeight: 600, background: '#25D366', color: '#fff', borderRadius: 9, textDecoration: 'none' },
+    eventImage: { width: '100%', maxHeight: 380, objectFit: 'cover', borderRadius: 14, marginBottom: 16 },
   }
 
   if (!evento) {
@@ -85,6 +86,7 @@ export default function EventoPage() {
     <main style={styles.page}>
       <div style={styles.wrapper}>
         <div style={styles.brand}>
+          {evento.imagen && (<img src={evento.imagen} alt={evento.nombre} style={styles.eventImage} />)}
           <h1 style={styles.eventTitle}>{evento.nombre}</h1>
           <p style={styles.eventSub}>{evento.subtitulo}</p>
           <p style={styles.eventMeta}>{evento.lugar}</p>
