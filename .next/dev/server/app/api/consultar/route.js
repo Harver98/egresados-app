@@ -1,0 +1,10 @@
+var R=require("../../../chunks/[turbopack]_runtime.js")("server/app/api/consultar/route.js")
+R.c("server/chunks/OneDrive_Escritorio_egresados-app_app_api_consultar_route_1exrv75.js")
+R.c("server/chunks/07l5_next_1hss4lz._.js")
+R.c("server/chunks/07l5_@supabase_postgrest-js_dist_index_mjs_1u--6mr._.js")
+R.c("server/chunks/07l5_@supabase_auth-js_dist_module_08-s9yh._.js")
+R.c("server/chunks/07l5_0xgbjyz._.js")
+R.c("server/chunks/[root-of-the-server]__141u1oe._.js")
+R.c("server/chunks/0p29_egresados-app__next-internal_server_app_api_consultar_route_actions_1yf72nc.js")
+R.m("[project]/OneDrive/Escritorio/egresados-app/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/OneDrive/Escritorio/egresados-app/app/api/consultar/route.js [app-route] (ecmascript)\" } [app-route] (ecmascript)")
+module.exports=R.m("[project]/OneDrive/Escritorio/egresados-app/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/OneDrive/Escritorio/egresados-app/app/api/consultar/route.js [app-route] (ecmascript)\" } [app-route] (ecmascript)").exports
